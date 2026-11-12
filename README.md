@@ -1,5 +1,7 @@
 # 🎮 High-Performance Mobile Top-Down Shooter (Unity 6.6 URP)
 
+[![Play in Browser](https://img.shields.io/badge/🎮_Play_Game-Play_Online-brightgreen?style=for-the-badge)](https://tviy_username.github.io/MobileShooter/)
+
 A high-performance, event-driven top-down shooter built in **Unity 6.6 (URP)**, designed with a strong focus on clean architecture, zero-garbage-collection core loops, and mobile/WebGL optimization standards.
 
 [![Unity 6.6](https://img.shields.io/badge/Unity-6.6-black?style=flat&logo=unity)](https://unity.com)
