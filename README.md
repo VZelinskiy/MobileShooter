@@ -12,6 +12,7 @@ A high-performance, event-driven top-down shooter built in **Unity 6.6 (URP)**, 
 
 ## 🎥 Gameplay & Preview
 
+https://github.com/user-attachments/assets/2a17278e-790c-49de-9b2f-c54eb04aeda7
 
 ---
 
