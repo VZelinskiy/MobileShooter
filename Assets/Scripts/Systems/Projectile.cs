@@ -17,6 +17,7 @@ public class Projectile : MonoBehaviour
     private CancellationTokenSource cts;
     private Vector3 moveDirection;
     private bool hasHit;
+    private bool isReturned;
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class Projectile : MonoBehaviour
         onReturnToPool = returnAction;
         moveDirection = direction.normalized;
         hasHit = false;
+        isReturned = false;
 
         transform.SetParent(null);
 
@@ -41,6 +43,8 @@ public class Projectile : MonoBehaviour
     {
         cts = new CancellationTokenSource();
         LifeTImeRoutine(cts.Token).Forget();
+
+        CheckInitialOverlap();
     }
 
     private void OnDisable()
@@ -87,6 +91,8 @@ public class Projectile : MonoBehaviour
         //    hasHit = true;
         //    damageable.TakeDamage(damage);
         //}
+        if (isReturned) return;
+
         DealDamage(other);
 
         // спавнимо ефект влучання у точці зіткнення
@@ -96,16 +102,16 @@ public class Projectile : MonoBehaviour
         ReturnSelf();
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        DealDamage(other);
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    DealDamage(other);
 
-        // спавнимо ефект влучання у точці зіткнення
-        SpawnImpactEffect(other);
+    //    // спавнимо ефект влучання у точці зіткнення
+    //    SpawnImpactEffect(other);
 
-        // незалежно від того, влучили у ворога чи в перешкоду, повертаємо кулю в пул
-        ReturnSelf();
-    }
+    //    // незалежно від того, влучили у ворога чи в перешкоду, повертаємо кулю в пул
+    //    ReturnSelf();
+    //}
 
     private void DealDamage(Collider collider)
     {
@@ -123,6 +129,27 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    private void CheckInitialOverlap()
+    {
+        // робимо маленьку сферу в точці спавну кулі і дивимося, хто в ній є
+        // радіус має відповідати приблизному розміру кулі
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 0.5f);
+
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Player")) continue;
+
+            if (hitCollider.TryGetComponent<IDamageable>(out var damageable))
+            {
+                hasHit = true;
+                damageable.TakeDamage(damage);
+                SpawnImpactEffect(hitCollider);
+                ReturnSelf();
+                break;
+            }
+        }
+    }
+
     private void SpawnImpactEffect(Collider other)
     {
         if (impactEffectPrefab != null)
@@ -135,6 +162,9 @@ public class Projectile : MonoBehaviour
 
     private void ReturnSelf()
     {
+        if (isReturned) return;
+        isReturned = true;
+
         onReturnToPool?.Invoke(this);
     }
 }
