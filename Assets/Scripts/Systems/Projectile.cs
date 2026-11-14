@@ -93,13 +93,7 @@ public class Projectile : MonoBehaviour
         //}
         if (isReturned) return;
 
-        DealDamage(other);
-
-        // спавнимо ефект влучання у точці зіткнення
-        SpawnImpactEffect(other);
-
-        // незалежно від того, влучили у ворога чи в перешкоду, повертаємо кулю в пул
-        ReturnSelf();
+        ProcessHit(other);
     }
 
     //private void OnTriggerStay(Collider other)
@@ -113,20 +107,21 @@ public class Projectile : MonoBehaviour
     //    ReturnSelf();
     //}
 
-    private void DealDamage(Collider collider)
+    private void ProcessHit(Collider targetCollider)
     {
-        //Debug.Log("Bullet collide");
-        if (hasHit) return;
-
-        // перевіряємо, чи обєкт, у який влучили, має компонент здоровя (реалізує IDamageable)
-        // також переконуємося, що куля не влучає в самого гравця (якщо у гравця є свій колайдер)
-        if (collider.CompareTag("Player")) return;
-
-        if (collider.TryGetComponent<IDamageable>(out var damageable))
+        if (!hasHit)
         {
-            hasHit = true;
-            damageable.TakeDamage(damage);
+            // GetComponentInParent знайде IDamageable як на самому об'єкті, так і на корені, якщо влучили в кістку
+            var damageable = targetCollider.GetComponentInParent<IDamageable>();
+            if (damageable != null)
+            {
+                hasHit = true;
+                damageable.TakeDamage(damage);
+            }
         }
+
+        SpawnImpactEffect(targetCollider);
+        ReturnSelf();
     }
 
     private void CheckInitialOverlap()
@@ -137,14 +132,12 @@ public class Projectile : MonoBehaviour
 
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.CompareTag("Player")) continue;
+            if (hitCollider.CompareTag("Player") || hitCollider.transform.root.CompareTag("Player")) continue;
 
-            if (hitCollider.TryGetComponent<IDamageable>(out var damageable))
+            // Перевіряємо, чи є в зоні спавну ворог (шукаємо IDamageable вгору по ієрархії)
+            if (hitCollider.GetComponentInParent<IDamageable>() != null)
             {
-                hasHit = true;
-                damageable.TakeDamage(damage);
-                SpawnImpactEffect(hitCollider);
-                ReturnSelf();
+                ProcessHit(hitCollider);
                 break;
             }
         }

@@ -1834,6 +1834,22 @@ PrefabInstance:
       propertyPath: damageFlashImage
       value: 
       objectReference: {fileID: 1802847675}
+    - target: {fileID: 7662463958152814669, guid: cccd179b8ef44d14295760329bf31c09, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70562047
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662463958152814669, guid: cccd179b8ef44d14295760329bf31c09, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.70479006
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662463958152814669, guid: cccd179b8ef44d14295760329bf31c09, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.051128082
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662463958152814669, guid: cccd179b8ef44d14295760329bf31c09, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.05250442
+      objectReference: {fileID: 0}
     - target: {fileID: 7780451125883670579, guid: cccd179b8ef44d14295760329bf31c09, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
